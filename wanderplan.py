@@ -1,5 +1,6 @@
 # from cmath import nan
 import locale
+import sys
 import datetime
 import pandas as pd
 
@@ -54,6 +55,12 @@ wpstyle = '''
       cursor: pointer;
     }
 
+    a {color: #089901;}
+    a:link {text-decoration: none;}
+    a:visited {text-decoration: none;}
+    a:hover {text-decoration: underline;}
+    a:active {text-decoration: underline;}
+
     #wanderplan tr:hover {background-color: #ddd;}
 </style>
 '''
@@ -64,7 +71,7 @@ wptable = '''
 <table id="wanderplan">
 <thead><tr>
   <th style=\"text-align:center;\">Datum</th>
-  <th>Veranstaltung </b>(auch vergangene Termine anzeigen: <input type="checkbox" id="historie" onchange="historie"()>)<b></th>
+  <th>Veranstaltung </b>(bisherige einblenden: <input type="checkbox" id="historie" onchange="historie"()>)<b></th>
   <th>Art</th>
   <th>Wanderführung/<br>Organisation</th>
   <th>Details/Links</th>
@@ -95,13 +102,13 @@ for line in wpdata[0:]:
 
   # Veranstaltungspalte
   folgezeile = line['Veranstaltung 2 '].strip()
-  if wzukunft:
-    folgezeile += ", " + line['Corona-Regeln'].strip() + ", " + line['Treffpunkt'].strip()
+  if wzukunft: # für künftige Termine ggf Treffpunkt und Corona-Regeln hinzufügen
+    if line['Treffpunkt'] != "": folgezeile += " - Treffpunkt: " + line['Treffpunkt']
+    if line['Corona-Regeln'] != "": folgezeile += ", " + line['Corona-Regeln']
   wptable += "<td><b>{0}</b><br>{1}</td>".format(line['Veranstaltung'].strip(),folgezeile)
 
   # Art: Link auf Icon
-  wptable += "<td>{0}</td>".format(line['Icon'].strip())
-  # wptable += "<td><a href={0}>Link</a></td>".format('./downloads...')
+  wptable += "<td><img src=\"./icons/{0}xs.png\"></td>".format(line['Icon'].strip())
   
   # Wanderführer
   if line['WFKW'] != '':
@@ -111,7 +118,7 @@ for line in wpdata[0:]:
   
   # Ausschreibung mit Link
   if line['Ausschreibung'] != "":
-    wptable += "<td><a href={0}>⇒Beschreibung</a></td>".format(line['Ausschreibung'].strip())
+    wptable += "<td><b><a href={0}>⇒ Beschreibung</a></b></td>".format(line['Ausschreibung'].strip())
   else:
     wptable += '<td></td>'
   
@@ -139,6 +146,11 @@ historie.addEventListener('change', (event) => {
 
 # Anlegen der Ziel-HTML
 print("Schreibe wanderplan.html mit {0} Veranstaltungen.".format(len(wpdata)))
+print(wpstyle + wptable )
 wpout = open("wanderplan.html", "w")
-wpout.writelines(wpstyle + wptable)
+try:
+  wpout.writelines(wpstyle + wptable)
+except:
+  e = sys.exc_info()
+  print("Fehler beim Schreiben der HTML-Seite." + e)
 wpout.close()
