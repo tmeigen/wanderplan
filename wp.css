@@ -1,37 +1,33 @@
-<html lang="de">
-<meta charset="UTF-8">
-<style>
-    #wanderplan {
-      font-family: "Open Sans", Arial, Helvetica, sans-serif;
-      color: #545454;
-      border-collapse: collapse;
-      width: 100%;
-    }
-    
-    #wanderplan th {
-      padding-top: 8px;
-      padding-bottom: 8px;
-      text-align: left;
-      background-color: #089901;
-      color: white;
-    }
-    
-    #wanderplan td, #wanderplan th {
-      border: 1px solid #ddd;
-      padding: 4px;
-    }
+#wanderplan {
+  font-family: "Open Sans", Arial, Helvetica, sans-serif;
+  color: #545454;
+  border-collapse: collapse;
+  width: 100%;
+}
 
-    .checkbox {
-      background-color: #4CAF50; /* Green */
-      border: none;
-      color: white;
-      padding: 5px 5px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      margin: 4px 2px;
-      cursor: pointer;
-    }
+#wanderplan th {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-align: left;
+  background-color: #089901;
+  color: white;
+}
 
-    #wanderplan tr:hover {background-color: #ddd;}
-</style>
+#wanderplan td, #wanderplan th {
+  border: 1px solid #ddd;
+  padding: 4px;
+}
+
+.checkbox {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+#wanderplan tr:hover {background-color: #ddd;}

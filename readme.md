@@ -24,14 +24,23 @@ Installation der benötigten Python-Pakete
 - python3 -m pip install pandas
 - python3 -m pip install openpyxl
 
-Danach sollte die Generierung aufrufbar sein über:
+Danach sollte die Generierung aufrufbar sein über
 - SSH: python3 wanderplan.py und/oder
 - http://<domain>/wanderplan/wanderplan.php
+
+Einbetten der generierten HTML-Seite in Wordpress
+Einbettung über HTML Block mit folgendem Inhalt:
+```
+<iframe src="<pfad>/wanderplan.html" referrer-policy="same-origin" width="100%" height="3700" frameborder="0" scrolling="no"></iframe>
+```
+Anpassungen:
+- <pfad>
+- height:
 
 # Spec HTML-Rendering
 ## Spalte „Datum“
 - [x] zweizeilig (Wochentag | Datum)
-- in schwarz, falls Datum in der Zukunft liegt; in grau wenn Termin in der Vergangenheit liegt
+- [x] in schwarz, falls Datum in der Zukunft liegt; in grau wenn Termin in der Vergangenheit liegt
 ## Spalte „Veranstaltung“
 - [x] Erste Zeile fett
   - Spalte F im Excel;
@@ -53,16 +62,7 @@ Danach sollte die Generierung aufrufbar sein über:
 - [x] Wanderführung aus Spalte K, wenn MON, dann „LW:“ & Spalte K in zweite Zeile „KW:“ & Spalte L
 ## Spalte „Details / Anmeldung“
 - [ ] Link auf PDF, falls Dateiname in Spalte N vorhanden, Text „è Beschreibung“
-- [ ] MailTo-Link in neuer Zeile, falls Dateiname in Spalte N UND Veranstaltung in der Zukunft liegt, Text „è Anmeldung“; Mailtext siehe unten (variiert nach Typ, KW/LW-Abfrage bei MON)
-- [ ] Logik um die Anzeige des Anmeldelinks könnte man noch schlauer machen (noch nicht implementiert):
-  - [ ] Erscheinen nicht von Datum des Makroruns abhängig machen, sondern von separater Anmeldefrist im Excel
-  - [ ] Also neue Spalte im Excel einfügen und HTML-Generator entsprechend aufschlauen
-- Text im MailTo-Link könnte man noch schlauer machen, z. B.
-  - [ ] Ggf. Abfrage zu Bezahlung è Auswahl „Bar/Bus“ oder „BEZ“
-  - [ ] Ggf. Abfrage zu Buszustieg è Platzhalter zum Erfassen der Bushaltestelle
-  - [ ] Ggf. Abfrage zu Gast/Mitglied è Auswahlmöglichkeit „Mitglied“ oder „Gast“
-  - [ ] Also neue Spalten im Excel einfügen und HTML-Generator entsprechend aufschlauen
-- Fernziel (wenn überhaupt) Generell könnte man die Anmeldung auch komplett online programmieren, oder über Ticketsystem abwickeln, aber Datenschutz…
+- [ ] MailTo-Link in neuer Zeile, falls Dateiname in Spalte N UND Veranstaltung in der Zukunft liegt, 
  
 ## Aufgaben Bernhard
  - Spalten für Google Calendar umbenennen
