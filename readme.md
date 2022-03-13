@@ -26,7 +26,7 @@ Installation der benötigten Python-Pakete
 
 Danach sollte die Generierung aufrufbar sein über
 - SSH: python3 wanderplan.py und/oder
-- http://<domain>/wanderplan/wanderplan.php
+- http://&lt;domain&gt;/wanderplan/wanderplan.php
 
 Einbetten der generierten HTML-Seite in Wordpress
 Einbettung über HTML Block mit folgendem Inhalt:
@@ -34,7 +34,7 @@ Einbettung über HTML Block mit folgendem Inhalt:
 <iframe src="<pfad>/wanderplan.html" referrer-policy="same-origin" width="100%" height="3700" frameborder="0" scrolling="no"></iframe>
 ```
 Anpassungen:
-- <pfad>
+- &lt;pfad&gt;
 - height:
 
 # Spec HTML-Rendering
@@ -49,26 +49,25 @@ Anpassungen:
   - Eventuell ergänzt um die Ausgebucht-Info, also „–“ & Text in Spalte P & „–“ , Normale Farbgebung, als Schwarz / Grau
 - Folgezeilen (eine oder mehr), je nachdem
   - [x] nicht fett, in schwarz, falls Datum in der Zukunft liegt; in grau wenn Termin in der Vergangenheit liegt
-  - [ ] „ca. „ & km-Angabe in Spalte H, bei MON „LW ca.“ & Spalte H & „, KW: ca.“ & Spalte I, bei SPW Höhenmeter mit „ca.“ dahinter
+  - [x] „ca. „ & km-Angabe in Spalte H, bei MON „LW ca.“ & Spalte H & „, KW: ca.“ & Spalte I, bei SPW Höhenmeter mit „ca.“ dahinter
   - Wenn Termin in der Zukunft:
-    - [ ] Treffpunkt aus Spalte M ergänzen
-    - [ ] Dahinter Corona-Hinweise aus Spalte Q
+    - [x] Treffpunkt aus Spalte M ergänzen
+    - [x] Dahinter Corona-Hinweise aus Spalte Q
 - Noch nicht implementiert:
   - Anmeldefrist, Teilnehmerbegrenzung, Preis (è neue Spalten in Excel notwendig; nur anzeigen, wenn Beschreibung vorhanden UND Anmeldefrist noch nicht abgelaufen)
 ## Spalte „Art“
-- [ ] Link auf entsprechendes Icon aus Spalte E generieren
+- [x] Link auf entsprechendes Icon aus Spalte E generieren
 ## Spalte „Wanderführung/Organisation“
-- [ ] in Schwarz, falls Datum in der Zukunft liegt; in Grau wenn Termin in der Vergangenheit liegt
+- [x] in Schwarz, falls Datum in der Zukunft liegt; in Grau wenn Termin in der Vergangenheit liegt
 - [x] Wanderführung aus Spalte K, wenn MON, dann „LW:“ & Spalte K in zweite Zeile „KW:“ & Spalte L
 ## Spalte „Details / Anmeldung“
-- [ ] Link auf PDF, falls Dateiname in Spalte N vorhanden, Text „è Beschreibung“
+- [x] Link auf PDF, falls Dateiname in Spalte N vorhanden, Text „è Beschreibung“
 - [ ] MailTo-Link in neuer Zeile, falls Dateiname in Spalte N UND Veranstaltung in der Zukunft liegt, 
  
-## Aufgaben Bernhard
- - Spalten für Google Calendar umbenennen
+## Excel Umstellung
+ - [ ] Spalten für Google Calendar umbenennen
    - Datum -> Start Date
    - Veranstaltung -> Subject
-   - 
- - Spalten Monat und Tag entfernen
- - Spalten KM, KMKW und HM als Text formatieren oder besser noch: alles in ein Feld Veranstaltung 2 schreiben
- - warum Veranstaltung 2
+   - ...
+ - [ ] Spalten Monat und Tag entfernen
+ - [ ] Spalten KM, KMKW und HM als Text formatieren oder besser noch: alles in ein Feld Veranstaltung 2 schreiben

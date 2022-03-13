@@ -4,16 +4,17 @@ import sys
 import datetime
 import pandas as pd
 
-locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8') # zur korrekten Ermittlung des Wochentages
+# zur korrekten Ermittlung des Wochentages
+locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
 
 # Import des Wanderplan Excel mit Pandas und Openpyxl:
 print("Lese wanderplan.xlsm")
 df = pd.read_excel("wanderplan.xlsm", engine='openpyxl')
 
 # Umwandlung der Spalte Datum in String im Format dd.mm.yy und Beseitigung von nan
-df['Tag'] = df['Tag'].dt.strftime('%A') # Wochentag
-df['Datum'] = df['Datum'].dt.strftime('%d.%m.%Y') # Datum im Format tt.mm.yyyy
-df = df.fillna('') # Umwandlung von nan Feldern in leere Strings
+df['Tag'] = df['Tag'].dt.strftime('%A')  # Wochentag
+df['Datum'] = df['Datum'].dt.strftime('%d.%m.%Y')  # Datum im Format tt.mm.yyyy
+df = df.fillna('')  # Umwandlung von nan Feldern in leere Strings
 
 # Umwandlung des Dataframes in List of Dicts
 wpdata = df.to_dict('records')
@@ -84,45 +85,64 @@ wptable = '''
 # Füllen der Tabellenzellen je Spalte
 print("Generiere HTML-Tabelle.")
 for line in wpdata[0:]:
-  # Filtern vergangener Termine
-  try:
-    wpdatum = datetime.datetime.strptime(line['Datum'], '%d.%m.%Y')
-    if wpdatum > datetime.datetime.today(): wzukunft = True
-    else: wzukunft = False
-  except ValueError:
-    print("Seltsamer Formatfehler bei 1blu Hoster => Abbruch")
-    break
+    # Filtern vergangener Termine
+    try:
+        wpdatum = datetime.datetime.strptime(line['Datum'], '%d.%m.%Y')
+        if wpdatum > datetime.datetime.today():
+            wzukunft = True
+        else:
+            wzukunft = False
+    except ValueError:
+        print("Seltsamer Formatfehler bei 1blu Hoster => Abbruch")
+        break
 
-  if wzukunft: wptable += '<tr>'
-  else: wptable += '<tr class=\"noshow\" style=\"display:none; color:grey\">' # ausblenden alter Termine
+    if wzukunft:
+        wptable += '<tr>'
+    else:
+        # ausblenden alter Termine
+        wptable += '<tr class=\"noshow\" style=\"display:none; color:grey\">'
 
-  # Datumspalte
-  wptable += "<td style=\"text-align:center;\"><b>{0}<br>{1}</b></td>" \
-    .format(line['Tag'],line['Datum'])
+    # Datumspalte
+    wptable += "<td style=\"text-align:center;\"><b>{0}<br>{1}</b></td>" \
+        .format(line['Tag'], line['Datum'])
 
-  # Veranstaltungspalte
-  folgezeile = line['Veranstaltung 2 '].strip()
-  if wzukunft: # für künftige Termine ggf Treffpunkt und Corona-Regeln hinzufügen
-    if line['Treffpunkt'] != "": folgezeile += " - Treffpunkt: " + line['Treffpunkt']
-    if line['Corona-Regeln'] != "": folgezeile += ", " + line['Corona-Regeln']
-  wptable += "<td><b>{0}</b><br>{1}</td>".format(line['Veranstaltung'].strip(),folgezeile)
+    # Veranstaltungspalte
+    folgezeile = ""
+    if line['Veranstaltung 2 '] != "":
+        folgezeile += "<br>" +line['Veranstaltung 2 '].strip()
+    if line['KM'] != "":
+        folgezeile += "<br>LW: " + line['KM'] + "  "
+    if line['KMKW'] != "":
+        folgezeile += ", KW: ca. " + line['KMKW']
+    if line['HM'] != "":
+        folgezeile += ", HM: " + line['HM']
+    if wzukunft:  # für künftige Termine ggf Treffpunkt und Corona-Regeln hinzufügen
+        if line['Treffpunkt'] != "":
+            folgezeile += "<BR>Treffpunkt: " + line['Treffpunkt']
+        if line['Corona-Regeln'] != "":
+            folgezeile += "<BR>" + line['Corona-Regeln']
+    wptable += "<td><b>{0}</b>{1}</td>".format(
+        line['Veranstaltung'].strip(), folgezeile)
 
-  # Art: Link auf Icon
-  wptable += "<td><img src=\"./icons/{0}xs.png\"></td>".format(line['Icon'].strip())
-  
-  # Wanderführer
-  if line['WFKW'] != '':
-    wptable += '<td>LW: {0}<BR>KW: {1}</td>'.format(line['WF'], line['WFKW'])
-  else:
-    wptable += '<td>{0}</td>'.format(line['WF'])
-  
-  # Ausschreibung mit Link
-  if line['Ausschreibung'] != "":
-    wptable += "<td><b><a href={0}>⇒ Beschreibung</a></b></td>".format(line['Ausschreibung'].strip())
-  else:
-    wptable += '<td></td>'
-  
-  wptable += "</tr>\n"
+    # Art: Link auf Icon im Unterordner /icons
+    wptable += "<td><img src=\"./icons/{0}xs.png\"></td>".format(
+        line['Icon'].strip())
+
+    # Wanderführer
+    if line['WFKW'] != '':
+        wptable += '<td>LW: {0}<BR>KW: {1}</td>'.format(
+            line['WF'], line['WFKW'])
+    else:
+        wptable += '<td>{0}</td>'.format(line['WF'])
+
+    # Ausschreibung mit Link
+    if line['Ausschreibung'] != "":
+        wptable += "<td><b><a href={0}>⇒Beschreibung</a></b></td>".format(
+            line['Ausschreibung'].strip())
+    else:
+        wptable += '<td></td>'
+
+    wptable += "</tr>\n"
 wptable += "</tbody></table>"
 
 # Script für das Ein-/Ausblenden vergangener Veranstaltungen anhängen
@@ -146,11 +166,12 @@ historie.addEventListener('change', (event) => {
 
 # Anlegen der Ziel-HTML
 print("Schreibe wanderplan.html mit {0} Veranstaltungen.".format(len(wpdata)))
-print(wpstyle + wptable )
+print(wpstyle + wptable)
 wpout = open("wanderplan.html", "w")
 try:
-  wpout.writelines(wpstyle + wptable)
+    wpout.writelines(wpstyle + wptable)
+    print("HTML-Seite erfolgreich geschrieben.")
 except:
-  e = sys.exc_info()
-  print("Fehler beim Schreiben der HTML-Seite." + e)
+    e = sys.exc_info()
+    print("Fehler beim Schreiben der HTML-Seite." + e)
 wpout.close()
