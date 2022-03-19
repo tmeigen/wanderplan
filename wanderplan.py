@@ -112,7 +112,7 @@ wptable = '''
 <table id="wanderplan">
 <thead><tr>
   <th style=\"text-align:center;\">Datum</th>
-  <th>Veranstaltung </b>(bisherige einblenden: <input type="checkbox" id="historie" onchange="historie"()>)<b></th>
+  <th>Veranstaltung </b>(alte Wanderungen einblenden: <input type="checkbox" id="historie" onchange="historie"()>)<b></th>
   <th>Art</th>
   <th>Wanderführung/<br>Organisation</th>
   <th>Details/Links</th>
