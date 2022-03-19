@@ -66,6 +66,46 @@ wpstyle = '''
 </style>
 '''
 
+# Langtexte Wander-Typen
+wtype = {
+    "MON": "Monatswanderung",
+    "FAM": "Familienwanderung",
+    "FUN": "Besondere Veranstaltung",
+    "JSW": "Jungseniorenwanderung",
+    "MTR": "Monatstreffen",
+    "RAD-B": "Radwanderung",
+    "RAD-R": "Radwanderung",
+    "SEN": "Seniorenwanderung",
+    "SPW": "Sportwanderung"
+}
+
+# Generator für Anmeldungs-Mailto
+def genwmailto():
+    global mailto
+    mailto = '<br><b><a href=\"mailto:info@pwv-speyer.de?subject=Anmeldung/Workshop: ' + line["Veranstaltung"]
+    mailto += '''&body=Hallo PWV-Team Speyer,%0D%0A
+%0D%0AIch möchte folgende Personen zu einer Wanderung mit dem PWV Speyer anmelden:%0D%0A'''
+    mailto += '%0D%0AWanderung: ' + wtype[line["Icon"]]
+    mailto += '%0D%0ATitel:     ' + line["Veranstaltung"]
+    mailto += '%0D%0ADatum:     {0}, den {1}%0D%0A'.format(
+        line['Tag'], line['Datum'])
+    if line["Icon"] == "MON":
+        mailto += '''%0D%0ALang/Kurz:     _________________________ (Anmeldung für Kurz- oder Langwanderung)'''
+    mailto += '''%0D%0A
+%0D%0APerson 1:       _________________________ (Vor- und Nachname)
+%0D%0A
+%0D%0APerson 2:       _________________________ (Vor- und Nachname)
+%0D%0A
+%0D%0APerson 3:       _________________________ (Vor- und Nachname)
+%0D%0A
+%0D%0APerson 4:       _________________________ (Vor- und Nachname)
+%0D%0A
+%0D%0AIch bitte um kurze Bestätigung.
+%0D%0A
+%0D%0AViele Grüße
+%0D%0A\">⇒Anmeldung</a></b>
+'''
+
 # Header-Zeile
 wptable = '''
 <p style="font-family: Arial, Helvetica, sans-serif;">Stand: 07.02.2022</p>
@@ -111,7 +151,7 @@ for line in wpdata[0:]:
     if line['Veranstaltung 2 '] != "":
         folgezeile += "<br>" +line['Veranstaltung 2 '].strip()
     if line['KM'] != "":
-        folgezeile += "<br>LW: " + line['KM'] + "  "
+        folgezeile += "<br>LW: " + line['KM']
     if line['KMKW'] != "":
         folgezeile += ", KW: ca. " + line['KMKW']
     if line['HM'] != "":
@@ -137,8 +177,11 @@ for line in wpdata[0:]:
 
     # Ausschreibung mit Link
     if line['Ausschreibung'] != "":
-        wptable += "<td><b><a href={0}>⇒Beschreibung</a></b></td>".format(
-            line['Ausschreibung'].strip())
+        if wzukunft: # Anmeldelink generieren
+            genwmailto()
+        else:
+            mailto = ''
+        wptable += "<td><b><a href={0}>⇒Beschreibung</a></b>{1}</td>".format(line['Ausschreibung'].strip(), mailto)
     else:
         wptable += '<td></td>'
 
