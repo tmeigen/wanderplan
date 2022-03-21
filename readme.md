@@ -41,33 +41,27 @@ Anpassungen:
 ## Spalte „Datum“
 - [x] zweizeilig (Wochentag | Datum)
 - [x] in schwarz, falls Datum in der Zukunft liegt; in grau wenn Termin in der Vergangenheit liegt
+
 ## Spalte „Veranstaltung“
 - [x] Erste Zeile fett
   - Spalte F im Excel;
   - [x] in schwarz, falls Datum in der Zukunft liegt; in grau wenn Termin in der Vergangenheit liegt
-  - [ ] Eventuell ergänzt um die Abgesagt-Info, also „>>>“ &Text in Spalte O & „<<<“, in Rot falls Datum in der Zukunft; in Grau wenn Termin in der Vergangenheit liegt
-  - Eventuell ergänzt um die Ausgebucht-Info, also „–“ & Text in Spalte P & „–“ , Normale Farbgebung, als Schwarz / Grau
+  - [x] Eventuell ergänzt um die Abgesagt-Info, also „>>>“ &Text in Spalte O & „<<<“, in Rot falls Datum in der Zukunft; in Grau wenn Termin in der Vergangenheit liegt
+  - [X]Eventuell ergänzt um die Ausgebucht-Info, also „–“ & Text in Spalte P & „–“ , Normale Farbgebung, als Schwarz / Grau
 - Folgezeilen (eine oder mehr), je nachdem
   - [x] nicht fett, in schwarz, falls Datum in der Zukunft liegt; in grau wenn Termin in der Vergangenheit liegt
   - [x] „ca. „ & km-Angabe in Spalte H, bei MON „LW ca.“ & Spalte H & „, KW: ca.“ & Spalte I, bei SPW Höhenmeter mit „ca.“ dahinter
   - Wenn Termin in der Zukunft:
     - [x] Treffpunkt aus Spalte M ergänzen
     - [x] Dahinter Corona-Hinweise aus Spalte Q
-- Noch nicht implementiert:
-  - Anmeldefrist, Teilnehmerbegrenzung, Preis (è neue Spalten in Excel notwendig; nur anzeigen, wenn Beschreibung vorhanden UND Anmeldefrist noch nicht abgelaufen)
+
 ## Spalte „Art“
 - [x] Link auf entsprechendes Icon aus Spalte E generieren
+
 ## Spalte „Wanderführung/Organisation“
 - [x] in Schwarz, falls Datum in der Zukunft liegt; in Grau wenn Termin in der Vergangenheit liegt
 - [x] Wanderführung aus Spalte K, wenn MON, dann „LW:“ & Spalte K in zweite Zeile „KW:“ & Spalte L
+
 ## Spalte „Details / Anmeldung“
 - [x] Link auf PDF, falls Dateiname in Spalte N vorhanden, Text „è Beschreibung“
-- [ ] MailTo-Link in neuer Zeile, falls Dateiname in Spalte N UND Veranstaltung in der Zukunft liegt, 
- 
-## Excel Umstellung
- - [ ] Spalten für Google Calendar umbenennen
-   - Datum -> Start Date
-   - Veranstaltung -> Subject
-   - ...
- - [ ] Spalten Monat und Tag entfernen
- - [ ] Spalten KM, KMKW und HM als Text formatieren oder besser noch: alles in ein Feld Veranstaltung 2 schreiben
+- [x] MailTo-Link in neuer Zeile, falls Dateiname in Spalte N UND Veranstaltung in der Zukunft liegt

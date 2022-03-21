@@ -11,6 +11,19 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "pwa-chrome",
+            "url": "http://localhost:5500",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "pwa-chrome",
+            "name": "http:///Users/d003388/dev/git/wanderplan/wanderplan.html",
+            "request": "launch",
+            "url": "http:///Users/d003388/dev/git/wanderplan/wanderplan.html"
         }
     ]
 }

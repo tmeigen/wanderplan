@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    /* Customize the label (the container) */
+    .container {
+      display: block;
+      position: relative;
+      padding-left: 35px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      font-size: 22px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* Hide the browser's default checkbox */
+    .container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 40px;
+      width: 35px;
+      background-color: #eee;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+      background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked ~ .checkmark {
+      background-color: #089901;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+      display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .container .checkmark:after {
+      left: 13px;
+      top: 6px;
+      width: 5px;
+      height: 15px;
+      border: solid white;
+      border-width: 0 5px 5px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  </style>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+    <h2>Checkbox Tests</h2>
+  </head>
+  <body>
+    <label class="container"
+      >  <img src="./icons/MONxs.png">
+      <input type="checkbox" checked="checked" />
+      <span class="checkmark"></span>
+    </label>
+    <p>Historie: <input type="checkbox" class="checkbox" id="chk_historie" onchange="wp_historie()">12345</p>
+<p><img src="./icons/MONxs.png"><input type="checkbox" id="chk_mon" class="checkbox" onchange="wp_mon()"></p>
+<p><img src="./icons/MTRxs.png"><input type="checkbox" id="chk_mtr" class="checkbox" onchange="wp_mtr()"></p>
+<p>Termin <span style="color:#e4e4e4">Absage</span> wieder normaler Text.</p>
+  </body>
+</html>

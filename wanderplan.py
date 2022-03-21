@@ -8,8 +8,8 @@ import pandas as pd
 locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
 
 # Import des Wanderplan Excel mit Pandas und Openpyxl:
-print("Lese wanderplan.xlsm")
-df = pd.read_excel("wanderplan.xlsm", engine='openpyxl')
+print("Lese wanderplan.xlsx")
+df = pd.read_excel("wanderplan.xlsx", engine='openpyxl')
 
 # Umwandlung der Spalte Datum in String im Format dd.mm.yy und Beseitigung von nan
 df['Tag'] = df['Tag'].dt.strftime('%A')  # Wochentag
@@ -26,7 +26,7 @@ wpstyle = '''
 <style>
     #wanderplan {
       font-family: "Open Sans", Arial, Helvetica, sans-serif;
-      color: #545454;
+      color: black;
       border-collapse: collapse;
       width: 100%;
     }
@@ -117,18 +117,15 @@ wptable = '''
   <th>Wanderführung/<br>Organisation</th>
   <th>Details/Links</th>
 </tr></thead>
-<tbody>
-</body>
-</html>
 '''
 
 # Füllen der Tabellenzellen je Spalte
 print("Generiere HTML-Tabelle.")
 for line in wpdata[0:]:
-    # Filtern vergangener Termine
+    # Filtern vergangener Termine bis minus 1 Woche
     try:
         wpdatum = datetime.datetime.strptime(line['Datum'], '%d.%m.%Y')
-        if wpdatum > datetime.datetime.today():
+        if wpdatum >= datetime.datetime.today():
             wzukunft = True
         else:
             wzukunft = False
@@ -140,13 +137,25 @@ for line in wpdata[0:]:
         wptable += '<tr>'
     else:
         # ausblenden alter Termine
-        wptable += '<tr class=\"noshow\" style=\"display:none; color:grey\">'
+        wptable += '<tr class=\"noshow\" style=\"display:none; color:gray; background-color: #e4e4e4;\">'
 
     # Datumspalte
     wptable += "<td style=\"text-align:center;\"><b>{0}<br>{1}</b></td>" \
         .format(line['Tag'], line['Datum'])
 
     # Veranstaltungspalte
+    erstezeile = line['Veranstaltung'].strip()
+
+    if line['Absage'] != '':
+        if wzukunft == True:
+           erstezeile += '<span style="color: red">' + " &gt;&gt;&gt; " + line['Absage'] + " &lt;&lt;&lt;" + '</span>'
+        else:
+           erstezeile += " &gt;&gt;&gt; " + line['Absage'] + ' &lt;&lt;&lt;'
+    
+    if line['Ausgebucht'] != '':
+           erstezeile = line['Veranstaltung'].strip(
+           ) + " &gt;&gt;&gt;" + line['Ausgebucht'] + ' &lt;&lt;&lt;'
+
     folgezeile = ""
     if line['Veranstaltung 2 '] != "":
         folgezeile += "<br>" +line['Veranstaltung 2 '].strip()
@@ -162,7 +171,7 @@ for line in wpdata[0:]:
         if line['Corona-Regeln'] != "":
             folgezeile += "<BR>" + line['Corona-Regeln']
     wptable += "<td><b>{0}</b>{1}</td>".format(
-        line['Veranstaltung'].strip(), folgezeile)
+        erstezeile, folgezeile)
 
     # Art: Link auf Icon im Unterordner /icons
     wptable += "<td><img src=\"./icons/{0}xs.png\"></td>".format(
@@ -186,7 +195,7 @@ for line in wpdata[0:]:
         wptable += '<td></td>'
 
     wptable += "</tr>\n"
-wptable += "</tbody></table>"
+wptable += "</tbody > </table > </body> </html>"
 
 # Script für das Ein-/Ausblenden vergangener Veranstaltungen anhängen
 wptable += '''
@@ -194,9 +203,7 @@ wptable += '''
 const historie = document.getElementById('historie')
 historie.addEventListener('change', (event) => {
   var myClasses = document.querySelectorAll('.noshow');
-    i = 0;
-    l = myClasses.length;
-  for (i; i < l; i++) {
+  for (i=0; i < myClasses.length; i++) {
     if (document.getElementById('historie').checked) {
       myClasses[i].style.display="table-row";}
     else {
