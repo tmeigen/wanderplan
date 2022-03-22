@@ -1,12 +1,16 @@
 # Wanderplan - HTML Generator für Wanderpläne des PWV Speyer
 
 ## Inhalt
-- wanderplan.py: Generator in Python
+- readme.md: diese Datei
+- wanderplan.py: HTML-Generator
 - wanderplan.html: generierte HTML-Seite für die Einbettung in www.pwv-speyer.de
 - wanderplan.php: Script für den Aufruf des Generators per URL
-- wanderplan.xlsm: Excel-Datei, die die Planungsdaten enthält
-- wanderplan.csv: (geplant) CSV-Datei für den Import in Google Calendar
-- readme.md: diese Datei
+- wanderplan.css: Style-Sheet
+- wanderplan.js: eingebettete JavaScripte
+- WEBINP_Wanderplan_PWV_Speyer_aktuell.xlsx: Excel-Datei, die die Planungsdaten enthält
+- /archiv: Verzeichnis für archivierte HTML-Seiten
+- /icons: Icons der Wandertypen
+- (wanderplan.csv: (geplant) CSV-Datei für den Import in Google Calendar)
 
 ## Installation auf Hosting-Server über SSH-Zugang
 Feststellen der Unix Version
@@ -31,11 +35,11 @@ Danach sollte die Generierung aufrufbar sein über
 Einbetten der generierten HTML-Seite in Wordpress
 Einbettung über HTML Block mit folgendem Inhalt:
 ```
-<iframe src="<pfad>/wanderplan.html" referrer-policy="same-origin" width="100%" height="3700" frameborder="0" scrolling="no"></iframe>
+<iframe src="<pfad>/wanderplan.html" referrer-policy="same-origin" width="100%" height="4200" frameborder="0" scrolling="no"></iframe>
 ```
 Anpassungen:
 - &lt;pfad&gt;
-- height:
+- height: ist im Moment noch statisch eingetragen
 
 # Spec HTML-Rendering
 ## Spalte „Datum“
