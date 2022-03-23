@@ -13,9 +13,7 @@ print("Lese WEBINP_Wanderplan_PWV_Speyer_aktuell.xlsx")
 df = pd.read_excel(
     "WEBINP_Wanderplan_PWV_Speyer_aktuell.xlsx", engine='openpyxl')
 
-# Umwandlung der Spalte Datum in String im Format dd.mm.yy und Beseitigung von nan
-df['Tag'] = df['Tag'].dt.strftime('%A')  # Wochentag
-df['Datum'] = df['Datum'].dt.strftime('%d.%m.%Y')  # Datum im Format tt.mm.yyyy
+# Beseitigung von nan
 df = df.fillna('')  # Umwandlung von nan Feldern in leere Strings
 
 # Umwandlung des Dataframes in List of Dicts
@@ -38,18 +36,20 @@ wtype = {
 wpscript = '<script type="text/javascript" src="wanderplan.js"></script>'
 
 # Generator für Anmeldungs-Mailto
-def genwmailto():
-    global mailto
-    mailto = '<br><b><a href=\"mailto:info@pwv-speyer.de?subject=Anmeldung/Workshop: ' + line["Veranstaltung"]
-    mailto += '''&body=Hallo PWV-Team Speyer,%0D%0A
+def wpmailgen():
+    global wpmailto
+    wpmailto = '<br><b><a href=\"mailto:info@pwv-speyer.de?subject=Anmeldung/Workshop: ' + line["Veranstaltung"]
+    wpmailto += '''&body=Hallo PWV-Team Speyer,%0D%0A
 %0D%0AIch möchte folgende Personen zu einer Wanderung mit dem PWV Speyer anmelden:%0D%0A'''
-    mailto += '%0D%0AWanderung: ' + wtype[line["Icon"]]
-    mailto += '%0D%0ATitel:     ' + line["Veranstaltung"]
-    mailto += '%0D%0ADatum:     {0}, den {1}%0D%0A'.format(
-        line['Tag'], line['Datum'])
+    wpmailto += '%0D%0AWanderung: ' + wtype[line["Icon"]]
+    wpmailto += '%0D%0ATitel:     ' + line["Veranstaltung"]
+    wpmailto += '%0D%0ADatum:     {0}, den {1}%0D%0A'.format(
+        line['Datum'].strftime('%A'), line['Datum'].strftime('%d. %B %Y'))
+    if line['Hinweis'] != '':
+        wpmailto += '%0D%0AHinweis:       ' + line['Hinweis']
     if line["Icon"] == "MON":
-        mailto += '''%0D%0ALang/Kurz:     _________________________ (Anmeldung für Kurz- oder Langwanderung)'''
-    mailto += '''%0D%0A
+        wpmailto += '%0D%0ALang/Kurz:     _________________________ (Anmeldung für Kurz- oder Langwanderung)'
+    wpmailto += '''%0D%0A
 %0D%0APerson 1:       _________________________ (Vor- und Nachname)
 %0D%0A
 %0D%0APerson 2:       _________________________ (Vor- und Nachname)
@@ -89,31 +89,29 @@ print("Generiere HTML-Tabelle.")
 wptable = '<tbody>'
 for line in wpdata[0:]:
     # Filtern vergangener Termine bis minus 1 Woche
-    try:
-        wpdatum = datetime.datetime.strptime(line['Datum'], '%d.%m.%Y')
-        if wpdatum >= datetime.datetime.today():
-            wzukunft = True
-        else:
-            wzukunft = False
-    except ValueError:
-        print("Seltsamer Formatfehler bei 1blu Hoster => Abbruch")
-        break
+    # (if line['Datum'] <= wpgendate - datetime.timedelta(days=7):)
+#    try:
+    if line['Datum'] >= datetime.datetime.today():
+        wpzukunft = True
+    else:
+        wpzukunft = False
+#    except ValueError:
+#       print("Seltsamer Formatfehler bei 1blu Hoster => Abbruch")
+#        break
 
-    if wzukunft:
+    if wpzukunft:
         wptable += '<tr>'
     else:
-        # ausblenden alter Termine
         wptable += '<tr class=\"noshow\" style=\"display:none; color:gray; background-color: #e4e4e4;\">'
 
     # Datumspalte
     wptable += "<td style=\"text-align:center;\"><b>{0}<br>{1}</b></td>" \
-        .format(line['Tag'], line['Datum'])
+        .format(line['Datum'].strftime('%A'), line['Datum'].strftime('%d.%m.%Y'))
 
     # Veranstaltung - 1. Zeile, immer sichtbar, fett
-
     if line['Absage'] != '':
         erstezeile = "<del>" + line['Veranstaltung'] + "</del>"
-        if wzukunft == True:
+        if wpzukunft == True:
            erstezeile += '<span style="color: red">' + " &gt;&gt;&gt;" + line['Absage'] + "&lt;&lt;&lt;" + '</span>'
         else:
            erstezeile += " &gt;&gt;&gt;" + line['Absage'] + '&lt;&lt;&lt;'
@@ -123,24 +121,15 @@ for line in wpdata[0:]:
         erstezeile = line['Veranstaltung']
 
     # Veranstaltung 2 - Beschreibung der Wanderung
-    folgezeile = ""
+    folgezeilen = ""
     if line['Veranstaltung 2 '] != "":
-        folgezeile += "<br>" +line['Veranstaltung 2 ']
-    if line['KM'] != "":
-        folgezeile += "<br>LW: " + line['KM']
-    if line['KMKW'] != "":
-        folgezeile += ", KW: ca. " + line['KMKW']
-    if line['HM'] != "":
-        folgezeile += ", HM: " + line['HM']
+        folgezeilen += "<br>" +line['Veranstaltung 2 ']
 
     # Veranstaltung 3 - Ergänzungen nur für künftige Termine, wie Treffpunkt, Bus oder Kosten
-    if wzukunft:
-        if line['Treffpunkt'] != "":
-            folgezeile += "<BR>Treffpunkt: " + line['Treffpunkt']
-        if line['Corona-Regeln'] != "":
-            folgezeile += "<BR>" + line['Corona-Regeln']
-    wptable += "<td><b>{0}</b>{1}</td>".format(
-        erstezeile, folgezeile)
+    if wpzukunft:
+        if line['Veranstaltung 3'] != "":
+            folgezeilen += "<BR>" + line['Veranstaltung 3']
+    wptable += "<td><b>{0}</b>{1}</td>".format(erstezeile, folgezeilen)
 
     # Art: Link auf Icon im Unterordner /icons
     wptable += "<td style=\"text-align:center;\"><img src=\"./icons/{0}xs.png\"></td>".format(
@@ -154,14 +143,14 @@ for line in wpdata[0:]:
         wptable += '<td>{0}</td>'.format(line['WF'])
 
     # Ausschreibung mit Link
+    wpmailto = ''
     if line['Ausschreibung'] != "":
-# --> Anmeldefrist, sofern nicht verstrichen
-        if wzukunft: # Anmeldelink generieren
-            genwmailto()
-        else:
-            mailto = ''
+        # Anmeldefrist, sofern nicht verstrichen
+        if line['Anmeldefrist'] != '':
+            if line['Anmeldefrist'] > datetime.datetime.today():
+                wpmailgen()  # Anmeldelink generieren
         wptable += "<td><b><a href={0}>⇒Beschreibung</a></b>{1}</td>".format(
-            line['Ausschreibung'], mailto)
+            line['Ausschreibung'], wpmailto)
     else:
         wptable += '<td></td>'
 
@@ -176,10 +165,10 @@ if not os.path.exists('./archiv'):
     os.makedirs('./archiv')
 
 # Archivierung der bisherigen HTML-Datei
-source = "./wanderplan.html"
-destination = "./archiv/wanderplan" + datetime.datetime.now().strftime("%y%m%d-%H%M%S") +".html"
+wpquelle = "./wanderplan.html"
+wpziel = "./archiv/wanderplan" + datetime.datetime.now().strftime("%y%m%d-%H%M%S") +".html"
 try:
-    shutil.copy(source, destination)
+    shutil.copy(wpquelle, wpziel)
 except PermissionError: print("Fehlende Zugriffsrechte beim Archivieren der HTML-Seite!")
 except: print("Fehler beim Archivieren der HTML-Seite!")
 print("HTML-Seite archiviert")
@@ -194,6 +183,7 @@ try:
     # print(wphtml)
     wpout.close()
     print("HTML-Seite erfolgreich geschlossen.")
+    print("Fertig!")
 except:
     e = sys.exc_info()
     print("Fehler beim Schreiben der HTML-Seite." + e)
