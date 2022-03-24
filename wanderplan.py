@@ -3,15 +3,21 @@ import os
 import sys
 import shutil
 import datetime
+import time
+# print("Starte import pandas")
 import pandas as pd
 
 # zur korrekten Ermittlung des Wochentages
 locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
 
+wpfile = "WEBINP_Wanderplan_PWV_Speyer_aktuell.xlsx"
+
 # Import des Wanderplan Excel mit Pandas und Openpyxl:
-print("Lese WEBINP_Wanderplan_PWV_Speyer_aktuell.xlsx")
-df = pd.read_excel(
-    "WEBINP_Wanderplan_PWV_Speyer_aktuell.xlsx", engine='openpyxl')
+print("Lese " + wpfile + ".")
+df = pd.read_excel(wpfile, engine='openpyxl')
+
+# Ermittle Datum des Wanderplans aus dem Modifikationsdatum der Datei
+wpstand = datetime.datetime.fromtimestamp(os.path.getmtime(wpfile)).strftime('%d.%m.%Y')
 
 # Beseitigung von nan
 df = df.fillna('')  # Umwandlung von nan Feldern in leere Strings
@@ -69,11 +75,10 @@ wpheader = '''
 <html lang="de">
 <meta charset="UTF-8">
 <link rel="stylesheet" href="wanderplan.css">
-'''
+<h3 style="font-family: Arial, Helvetica, sans-serif;">Stand: ''' + wpstand + '</h3>'
 
 # Tabellen-Header
 wptabhead = '''
-<p style="font-family: Arial, Helvetica, sans-serif;">Stand: 07.02.2022</p>
 <table id="wanderplan">
 <thead><tr>
   <th style=\"text-align:center;\">Datum</th>

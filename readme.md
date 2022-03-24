@@ -16,23 +16,24 @@
 Feststellen der Unix Version
 - uname -a
 
-Feststellen der verfügbaren Python Version
-- ls /usr/bin/py3versions -s
+### Feststellen der verfügbaren Python Version
+- which python
 
-Anlegen Verzeichnis
+### Anlegen Verzeichnis
 - Anlegen eines Verzeichnisses /wanderplan im Web-Verzeichnis
 - Kopieren der Programm-Dateien (wanderplan.*) in dieses Verzeichnis
 - ggf. Anpassen des Start-Scriptes wanderplan.php, damit es über http://<domain>/wanderplan/wanderplan.php erreichbar ist
 
-Installation der benötigten Python-Pakete
+### Installation der benötigten Python-Pakete und $PATH anpassen
 - python3 -m pip install pandas
 - python3 -m pip install openpyxl
+- export PATH=~/.local/bin:$PATH
 
-Danach sollte die Generierung aufrufbar sein über
+### Danach sollte die Generierung aufrufbar sein über
 - SSH: python3 wanderplan.py und/oder
 - http://&lt;domain&gt;/wanderplan/wanderplan.php
 
-Einbetten der generierten HTML-Seite in Wordpress
+### Einbetten der generierten HTML-Seite in Wordpress
 Einbettung über HTML Block mit folgendem Inhalt:
 ```
 <iframe src="<pfad>/wanderplan.html" referrer-policy="same-origin" width="100%" height="4200" frameborder="0" scrolling="no"></iframe>
