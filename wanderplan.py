@@ -4,7 +4,6 @@ import sys
 import shutil
 import datetime
 import time
-# print("Starte import pandas")
 import pandas as pd
 
 # zur korrekten Ermittlung des Wochentages
@@ -74,11 +73,10 @@ def wpmailgen():
 wpheader = '''
 <html lang="de">
 <meta charset="UTF-8">
-<link rel="stylesheet" href="wanderplan.css">
-<h3 style="font-family: Arial, Helvetica, sans-serif;">Stand: ''' + wpstand + '</h3>'
+<link rel="stylesheet" href="wanderplan.css">'''
 
 # Tabellen-Header
-wptabhead = '''
+wptabhead = '<h3>Stand: ' + wpstand + '''</h3>
 <table id="wanderplan">
 <thead><tr>
   <th style=\"text-align:center;\">Datum</th>
@@ -90,19 +88,17 @@ wptabhead = '''
 '''
 
 # Tabellen-Inhalt - Füllen der Tabellenzellen je Spalte
-print("Generiere HTML-Tabelle.")
+print("Generiere HTML-Tabelle und des Teasers.")
 wptable = '<tbody>'
+wpteaser = '<ul>'
+wpteaserzahl = 0
 for line in wpdata[0:]:
     # Filtern vergangener Termine bis minus 1 Woche
     # (if line['Datum'] <= wpgendate - datetime.timedelta(days=7):)
-#    try:
     if line['Datum'] >= datetime.datetime.today():
         wpzukunft = True
     else:
         wpzukunft = False
-#    except ValueError:
-#       print("Seltsamer Formatfehler bei 1blu Hoster => Abbruch")
-#        break
 
     if wpzukunft:
         wptable += '<tr>'
@@ -160,10 +156,21 @@ for line in wpdata[0:]:
         wptable += '<td></td>'
 
     wptable += "</tr>\n"
+
+    # Teaser mit den nächsten n Wanderungen für die Startseite erstellen
+    if (wpzukunft == True) and (wpteaserzahl < 4) and (line['Absage'] == '') and (line['Ausgebucht'] == ''):
+        wpteaser += "<li><h3>{0} - {1} ({2})</h3></li>" \
+            .format(line['Datum'].strftime('%d.%m.%Y'), line['Veranstaltung'], wtype[line["Icon"]])
+        wpteaserzahl += 1
+
 wptable += "</tbody > </table > </body> </html>"
+wpteaser += "</ul>"
 
 # Zusammenbau der HTML-Seite
 wphtml = wpheader + wptabhead + wptable + wpscript
+
+# Zusammenbau des Teasers
+wpteashtml = wpheader + wpteaser
 
 # archiv-Verzeichnis ggf. anlegen
 if not os.path.exists('./archiv'):
@@ -174,21 +181,27 @@ wpquelle = "./wanderplan.html"
 wpziel = "./archiv/wanderplan" + datetime.datetime.now().strftime("%y%m%d-%H%M%S") +".html"
 try:
     shutil.copy(wpquelle, wpziel)
-except PermissionError: print("Fehlende Zugriffsrechte beim Archivieren der HTML-Seite!")
 except: print("Fehler beim Archivieren der HTML-Seite!")
 print("HTML-Seite archiviert")
 
-# Schreiben der HTML-Datei
+# Schreiben der Wanderplan-HTML-Datei
 try:
     print("Schreibe wanderplan.html mit {0} Veranstaltungen.".format(len(wpdata)))
     wpout = open("wanderplan.html", "w")
-    print("Datei geöffnet.")
     wpout.writelines(wphtml)
-    print("Inhalt geschrieben.")
-    # print(wphtml)
     wpout.close()
-    print("HTML-Seite erfolgreich geschlossen.")
-    print("Fertig!")
 except:
     e = sys.exc_info()
-    print("Fehler beim Schreiben der HTML-Seite." + e)
+    print("Fehler beim Schreiben der Wanderplan-HTML-Seite." + e)
+
+# Schreiben der Teaser-HTML-Datei
+try:
+    print("Schreibe wpteaser.html.")
+    wpout = open("wpteaser.html", "w")
+    wpout.writelines(wpteashtml)
+    wpout.close()
+except:
+    e = sys.exc_info()
+    print("Fehler beim Schreiben der Teaser-HTML-Seite." + e)
+
+print("Fertig!")
