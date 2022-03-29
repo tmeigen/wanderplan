@@ -177,8 +177,8 @@ if not os.path.exists('./archiv'):
     os.makedirs('./archiv')
 
 # Archivierung der bisherigen HTML-Datei
-wpquelle = "./wanderplan.html"
-wpziel = "./archiv/wanderplan" + datetime.datetime.now().strftime("%y%m%d-%H%M%S") +".html"
+wpquelle = "./wptable.html"
+wpziel = "./archiv/wptable" + datetime.datetime.now().strftime("%y%m%d-%H%M%S") +".html"
 try:
     shutil.copy(wpquelle, wpziel)
 except: print("Fehler beim Archivieren der HTML-Seite!")
@@ -187,7 +187,7 @@ print("HTML-Seite archiviert")
 # Schreiben der Wanderplan-HTML-Datei
 try:
     print("Schreibe wanderplan.html mit {0} Veranstaltungen.".format(len(wpdata)))
-    wpout = open("wanderplan.html", "w")
+    wpout = open("wptable.html", "w")
     wpout.writelines(wphtml)
     wpout.close()
 except:
