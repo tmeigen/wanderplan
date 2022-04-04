@@ -3,7 +3,6 @@ import os
 import sys
 import shutil
 import datetime
-import time
 import pandas as pd
 
 # zur korrekten Ermittlung des Wochentages
@@ -16,10 +15,11 @@ print("Lese " + wpfile + ".")
 df = pd.read_excel(wpfile, engine='openpyxl')
 
 # Ermittle Datum des Wanderplans aus dem Modifikationsdatum der Datei
-wpstand = datetime.datetime.fromtimestamp(os.path.getmtime(wpfile)).strftime('%d.%m.%Y')
+wpstand = datetime.date.fromtimestamp(os.path.getmtime(wpfile)).strftime('%d.%m.%Y')
 
-# Beseitigung von nan
+# Konvertierungen
 df = df.fillna('')  # Umwandlung von nan Feldern in leere Strings
+df['Datum'] = pd.to_datetime(df['Datum']).dt.date # Umwandlung von Timestamp in Datum
 
 # Umwandlung des Dataframes in List of Dicts
 wpdata = df.to_dict('records')
@@ -93,9 +93,7 @@ wptable = '<tbody>'
 wpteaser = '<ul>'
 wpteaserzahl = 0
 for line in wpdata[0:]:
-    # Filtern vergangener Termine bis minus 1 Woche
-    # (if line['Datum'] <= wpgendate - datetime.timedelta(days=7):)
-    if line['Datum'] >= datetime.datetime.today():
+    if line['Datum'] >= datetime.date.today():
         wpzukunft = True
     else:
         wpzukunft = False
@@ -186,7 +184,7 @@ print("HTML-Seite archiviert")
 
 # Schreiben der Wanderplan-HTML-Datei
 try:
-    print("Schreibe wanderplan.html mit {0} Veranstaltungen.".format(len(wpdata)))
+    print("Schreibe wptable.html mit {0} Veranstaltungen.".format(len(wpdata)))
     wpout = open("wptable.html", "w")
     wpout.writelines(wphtml)
     wpout.close()
