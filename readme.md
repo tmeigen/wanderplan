@@ -3,7 +3,6 @@
 ## Inhalt
 - readme.md: diese Datei
 - wanderplan.py: HTML-Generator
-- wanderplan.html: generierte HTML-Seite für die Einbettung in www.pwv-speyer.de
 - wanderplan.php: Script für den Aufruf des Generators per URL
 - wanderplan.css: Style-Sheet
 - wanderplan.js: eingebettete JavaScripte
@@ -33,10 +32,14 @@ Feststellen der Unix Version
 - SSH: python3 wanderplan.py und/oder
 - http://&lt;domain&gt;/wanderplan/wanderplan.php
 
+### Ausgabedateien
+- wptable.html: generierte HTML-Seite für die Einbettung in www.pwv-speyer.de
+- wpteaser.html: generierte Liste der nächsten n Wanderungen für die Startseite
+- wplog.txt: Generierungsprotokoll
 ### Einbetten der generierten HTML-Seite in Wordpress
 Einbettung über HTML Block mit folgendem Inhalt:
 ```
-<iframe src="<pfad>/wanderplan.html" referrer-policy="same-origin" width="100%" height="4200" frameborder="0" scrolling="no"></iframe>
+<iframe src="<pfad>/wptable.html" referrer-policy="same-origin" width="100%" height="4200" frameborder="0" scrolling="no"></iframe>
 ```
 Anpassungen:
 - &lt;pfad&gt;

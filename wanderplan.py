@@ -5,6 +5,9 @@ import shutil
 import datetime
 import pandas as pd
 
+print("Wanderplangenerator des PWV Speyer, Autor: Tom Meigen")
+print("https://github.com/tmeigen/wanderplan.git")
+
 # zur korrekten Ermittlung des Wochentages
 locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
 
