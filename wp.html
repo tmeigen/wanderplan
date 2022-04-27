@@ -1,100 +1,216 @@
 <html lang="de">
-<meta charset="UTF-8">
-<style>
-    #wanderplan {
-      font-family: "Open Sans", Arial, Helvetica, sans-serif;
-      color: #545454;
-      border-collapse: collapse;
-      width: 100%;
-    }
-    
-    #wanderplan th {
-      padding-top: 8px;
-      padding-bottom: 8px;
-      text-align: left;
-      background-color: #089901;
-      color: white;
-    }
-    
-    #wanderplan td, #wanderplan th {
-      border: 1px solid #ddd;
-      padding: 4px;
-    }
+	<meta charset="UTF-8" />
+	<style>
+		#wanderplan {
+			font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+			color: #545454;
+			border-collapse: collapse;
+			width: 100%;
+		}
 
-    .checkbox {
-      background-color: #4CAF50; /* Green */
-      border: none;
-      color: white;
-      padding: 5px 5px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      margin: 4px 2px;
-      cursor: pointer;
-      width: 50px;
-      height: 50px;
-    }
+		#wanderplan th {
+			padding-top: 8px;
+			padding-bottom: 8px;
+			text-align: left;
+			background-color: #089901;
+			color: white;
+		}
 
-    a {color: #e6ffe4;}
-    a:link {text-decoration: none;}
-    a:visited {text-decoration: none;}
-    a:hover {text-decoration: underline;}
-    a:active {text-decoration: underline;}
+		#wanderplan td,
+		#wanderplan th {
+			border: 1px solid #ddd;
+			padding: 4px;
+		}
 
-    #wanderplan tr:hover {background-color: #ddd;}
-    
-/*    .wp_historie {display: table-row;}
-    .wptyp_mon {display: table-row;}
-    .wptyp_mtr {display: none;}
-*/    
-</style>
+		a {
+			color: #089901;
+		}
+		a:link {
+			text-decoration: none;
+		}
+		a:visited {
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: underline;
+		}
+		a:active {
+			text-decoration: underline;
+		}
 
-<p style="font-family: Arial, Helvetica, sans-serif;">Stand: 07.02.2022</p>
-<p>Historie: <input type="checkbox" class="checkbox" id="chk_historie" onchange="wp_historie()">12345</p>
-<p><img src="./icons/MONxs.png"><input type="checkbox" id="chk_mon" class="checkbox" onchange="wp_mon()"></p>
-<p><img src="./icons/MTRxs.png"><input type="checkbox" id="chk_mtr" class="checkbox" onchange="wp_mtr()"></p>
-<table id="wanderplan">
-<thead><tr>
-  <th style="text-align:center;">Datum</th>
-  <th>Veranstaltung </th>
-  <th>Art</th>
-  <th>Wanderführung/<br>Organisation</th>
-  <th>Details/Links</th>
-</tr></thead>
+		#wanderplan tr:hover {
+			background-color: #ddd;
+		}
 
-<tbody>
-<tr class="wp_historie wptyp_mtr" style="display:none; color:grey"><td style="text-align:center;"><b>Freitag<br>07.01.2022</b></td><td><b>Monatstreffen Januar mit Neujahrsempfang</b></td><td><img src="./icons/MTRxs.png"></td><td>H. Back </td><td></td></tr>
-<tr class="wp_historie wptyp_mon" style="display:none; color:grey"><td style="text-align:center;"><b>Sonntag<br>16.01.2022</b></td><td><b>Glühweinwanderung im Speyerer Stadtwald</b><br>LW: 13 km, KW: ca. 4 km</td><td><img src="./icons/MONxs.png"></td><td>LW: N. Schmidt-Geheb<BR>KW: C. und O. Braun</td><td><b><a href=20220116_MON_Glühweinwanderung, v2.pdf>⇒Beschreibung</a></b></td></tr>
-<tr class="wp_historie wptyp_mon"><td style="text-align:center;"><b>Dienstag<br>06.12.2022</b></td><td><b>Ausflug zum Nikolaus</b></td><td><img src="./icons/FAMxs.png"></td><td>B. Steigleider</td><td></td></tr>
-<tr class="wp_historie wptyp_mtr"><td style="text-align:center;"><b>Mittwoch<br>07.12.2022</b></td><td><b>Ausflug zum Weihnachtsmarkt nach Mainz</b></td><td><img src="./icons/SENxs.png"></td><td>B. Steigleider</td><td></td></tr>
-</tbody></table>
-</body>
+		.wptyp_mon {
+			display: table-row;
+		}
+		.wptyp_fam {
+			display: table-row;
+		}
+		.wptyp_fun {
+			display: none;
+		}
+		.wp_alte {
+			display: table-row;
+		}
+		/* Customize the label (the container) */
+		.container {
+			display: block;
+			position: relative;
+			padding-left: 20px;
+			margin-bottom: 0px;
+			cursor: pointer;
+			font-size: 22px;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+		}
+
+		/* Hide the browser's default checkbox */
+		.container input {
+			position: absolute;
+			opacity: 0;
+			cursor: pointer;
+			height: 0;
+			width: 0;
+		}
+
+		/* Create a custom checkbox */
+		.checkmark {
+			position: absolute;
+			top: 7;
+			left: 0;
+			height: 25px;
+			width: 25px;
+			background-color: #eee;
+		}
+
+		/* Create the checkmark/indicator (hidden when not checked) */
+		.checkmark:after {
+			content: '';
+			position: absolute;
+			display: none;
+		}
+
+		/* Show the checkmark when checked */
+		.container input:checked ~ .checkmark:after {
+			display: block;
+		}
+
+		/* Style the checkmark/indicator */
+		.container .checkmark:after {
+			left: 8px;
+			top: 1px;
+			width: 5px;
+			height: 15px;
+			border: solid #089901;
+			border-width: 0 5px 5px 0;
+			-webkit-transform: rotate(45deg);
+			-ms-transform: rotate(45deg);
+			transform: rotate(45deg);
+		}
+	</style>
+	<body>
+		<table id="wanderplan">
+			<thead>
+				<tr>
+					<th style="text-align: center">Datum</th>
+					<th>Veranstaltung</th>
+					<th>Art</th>
+					<th>Wanderführung/<br />Organisation</th>
+					<th>Details/Links</th>
+				</tr>
+				<tr id="filters" style="width: 100%; background: #089901; display: flow-root">
+					<td>
+						<label class="container">
+							<img src="./icons/MONxs.png" />
+							<input type="checkbox" id="chk_mon" checked="checked" onclick="wptyp_show()" />
+							<span class="checkmark"></span>
+						</label>
+					</td>
+					<td>
+						<label class="container">
+							<img src="./icons/FUNxs.png" />
+							<input type="checkbox" id="chk_fun" checked="checked" onclick="wptyp_show()" />
+							<span class="checkmark"></span>
+						</label>
+					</td>
+					<td>
+						<label class="container">
+							<img src="./icons/FAMxs.png" />
+							<input type="checkbox" id="chk_fam" checked="checked" onclick="wptyp_show()" />
+							<span class="checkmark"></span>
+						</label>
+					</td>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr class="wptyp_fun">
+					<td style="text-align: center">
+						<b>Freitag<br />07.01.2022</b>
+					</td>
+					<td><b>Monatstreffen Januar mit Neujahrsempfang</b></td>
+					<td><img src="./icons/FUNxs.png" /></td>
+					<td>H. Back</td>
+					<td></td>
+				</tr>
+				<tr class="wptyp_mon">
+					<td style="text-align: center">
+						<b>Sonntag<br />16.01.2022</b>
+					</td>
+					<td><b>Glühweinwanderung im Speyerer Stadtwald</b><br />LW: 13 km, KW: ca. 4 km</td>
+					<td><img src="./icons/MONxs.png" /></td>
+					<td>LW: N. Schmidt-Geheb<br />KW: C. und O. Braun</td>
+					<td>
+						<b><a href="20220116_MON_Glühweinwanderung," v2.pdf>⇒Beschreibung</a></b>
+					</td>
+				</tr>
+				<tr class="wptyp_fam">
+					<td style="text-align: center">
+						<b>Dienstag<br />06.12.2022</b>
+					</td>
+					<td><b>Ausflug zum Nikolaus</b></td>
+					<td><img src="./icons/FAMxs.png" /></td>
+					<td>B. Steigleider</td>
+					<td></td>
+				</tr>
+				<tr class="wptyp_mon">
+					<td style="text-align: center">
+						<b>Mittwoch<br />07.12.2022</b>
+					</td>
+					<td><b>Ausflug zum Weihnachtsmarkt nach Mainz</b></td>
+					<td><img src="./icons/MONxs.png" /></td>
+					<td>B. Steigleider</td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
 </html>
 <script type="text/javascript">
-  function wp_historie() {
-  wprows = document.getElementsByClassName("wp_historie");
-  for (i=0; i < wprows.length; i++) {
-    if (document.getElementById('chk_historie').checked) {
-      wprows[i].style.display="table-row";}
-    else {
-      wprows[i].style.display="none";
-      }
-    }
-  }
+	// Zugriff auf CSS Klassen über Selektor erlauben
+	var WPstyles = document.styleSheets[0].rules
+	var WPtypCSS = {}
+	for (var i = 0; i < WPstyles.length; i++) WPtypCSS[WPstyles[i].selectorText] = WPstyles[i].style
 
-  function wp_mon() {
-    alert("mon");
-    if (document.getElementById("chk_mon").checked) {
-      document.getElementsByClassName("wptyp_mon").style.display="table-row";}
-      else {
-        document.getElementsByClassName("wptyp_mon").style.display="none";}
-      }
-
-  function wp_mtr() {
-  if (document.getElementById("chk_mtr").checked) {
-    alert("mtr");
-      document.getElementsByClassName("wptyp_mtr").style.display="table-row";}
-    else {
-      document.getElementsByClassName("wptyp_mtr").style.display="none";}
-    }
+	// zeigen/ausblenden von Wanderungen je nach Checkbox-Status
+	function wptyp_show() {
+		WPtypCSS['.wptyp_mon'].display = document.getElementById('chk_mon').checked ? 'table-row' : 'none'
+		WPtypCSS['.wptyp_fam'].display = document.getElementById('chk_fam').checked ? 'table-row' : 'none'
+		WPtypCSS['.wptyp_fun'].display = document.getElementById('chk_fun').checked ? 'table-row' : 'none'
+		/*		WPtypCSS['.wp_alte'].display = document.getElementById('chk_alte').checked ? 'table-row' : 'none'
+		Alte: <input type="checkbox" id="chk_alte" class="checkbox" onclick="wptyp_show()" />
+		<img src="./icons/FAMxs.png" /><input type="checkbox" id="chk_fam" class="checkbox" onchange="wptyp_show()" />
+		<img src="./icons/FUNxs.png" /><input type="checkbox" id="chk_fun" class="checkbox" onchange="wptyp_show()" />
+		WPtypCSS['.wptyp_jsw'].display = document.getElementById('chk_jsw').checked ? 'table-row' : 'none'
+		WPtypCSS['.wptyp_mtr'].display = document.getElementById('chk_mtr').checked ? 'table-row' : 'none'
+		WPtypCSS['.wptyp_rad-b'].display = document.getElementById('chk_rad-b').checked ? 'table-row' : 'none'
+		WPtypCSS['.wptyp_rad-r'].display = document.getElementById('chk_rad-r').checked ? 'table-row' : 'none'
+		WPtypCSS['.wptyp_sen'].display = document.getElementById('chk_sen').checked ? 'table-row' : 'none'
+		WPtypCSS['.wptyp_spw'].display = document.getElementById('chk_spw').checked ? 'table-row' : 'none'
+*/
+	}
 </script>
