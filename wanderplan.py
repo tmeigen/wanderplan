@@ -55,17 +55,22 @@ wpscript = '<script type="text/javascript" src="wanderplan.js"></script>'
 
 
 # Generator für Anmeldungs-Mailto
-def wpmailgen():
-    global wpmailto, line
+def wpmailgen(hike):
+    # Nach Verstreichen der Anmeldefrist "Nachmeldung" anzeigen
+    if hike['Anmeldefrist'] > datetime.date.today():
+        wpmeldung = "Anmeldung"
+    else:
+        wpmeldung = "Nachmeldung"
+
     wpmailto = (
-        f"<br><b><a href=\"mailto:info@pwv-speyer.de?subject=Anmeldung/Workshop: {line['Veranstaltung']}"
-        f"&body=Wanderung: {wtype[line['Icon']]}%0D%0A"
-        f"Titel:     {line['Veranstaltung']}%0D%0A"
-        f"Datum:     {line['Datum'].strftime('%A')}, den {line['Datum'].strftime('%d. %B %Y')}%0D%0A%0D%0A"
+        f"<br><b><a href=\"mailto:PWV Speyer<info@pwv-speyer.de>?subject={wpmeldung}: {hike['Veranstaltung']}"
+        f"&body=Wanderung: {wtype[hike['Icon']]}%0D%0A"
+        f"Titel:     {hike['Veranstaltung']}%0D%0A"
+        f"Datum:     {hike['Datum'].strftime('%A')}, den {hike['Datum'].strftime('%d. %B %Y')}%0D%0A%0D%0A"
         f"Hallo Pfälzerwald-Team Speyer,%0D%0A%0D%0A"
         f"ich möchte folgende Personen zu einer Wanderung mit dem PWV Speyer anmelden:%0D%0A%0D%0A"
     )
-    if line["Icon"] == "MON":
+    if hike["Icon"] == "MON":
         wpmailto += '%0D%0ALang/Kurz:     _________________________ (Anmeldung für Kurz- oder Langwanderung)'
     wpmailto += (
         "Person 1:       _________________________ (Vor- und Nachname)%0D%0A%0D%0A"
@@ -73,18 +78,15 @@ def wpmailgen():
         "Person 3:       _________________________ (Vor- und Nachname)%0D%0A%0D%0A"
         "Person 4:       _________________________ (Vor- und Nachname)%0D%0A%0D%0A"
     )
-    if line['Hinweis'] != '':
-        wpmailto += f"Hinweis:       {line['Hinweis']}%0D%0A"
+    if hike['Hinweis'] != '':
+        wpmailto += f"Hinweis:       {hike['Hinweis']}%0D%0A"
     wpmailto += (
-        "%0D%0AIch bitte um kurze Bestätigung."
-        "%0D%0A%0D%0A"
-        "Viele Grüße%0D%0A\">"
+        f"%0D%0AIch bitte um kurze Bestätigung."
+        f"%0D%0A%0D%0A"
+        f"Viele Grüße%0D%0A\">"
+        f"⇒{wpmeldung}</a></b>"
     )
-    # Nach Verstreichen der Anmeldefrist anderen Link anzeigen
-    if line['Anmeldefrist'] >= datetime.date.today():
-        wpmailto += "⇒Anmeldung</a></b>"
-    else:
-        wpmailto += "⇒Nachmeldung</a></b>"
+    return wpmailto
 
 
 # Seitenheader
@@ -109,7 +111,7 @@ wptabhead = (
 )
 wptable = "<tbody>"
 wpteaser = "<ul>"
-wpteaserzahl = 0
+wpteasercounter = 0
 wpical = (
     "BEGIN:VCALENDAR\r"
     "VERSION:2.0\r"
@@ -123,11 +125,8 @@ wpical = (
 )
 
 # Tabellen-Inhalt - Für alle Termine füllen der Tabellenzellen je Spalte
-for line in wpdata[0:]:
-    if line['Datum'] >= datetime.date.today():
-        wpzukunft = True
-    else:
-        wpzukunft = False
+for wphike in wpdata[0:]:
+    wpzukunft = wphike['Datum'] >= datetime.date.today()
 
     if wpzukunft:
         wptable += '<tr>'
@@ -136,72 +135,70 @@ for line in wpdata[0:]:
                    'background-color: #e4e4e4;\">'
 
     # Datumspalte
-    if line['ManTxtDatum'] == '':
-        wptable += f"<td style=\"text-align:center;\"><b>{line['Datum'].strftime('%A')}<br>{line['Datum'].strftime('%d.%m.%Y')}</b></td>"
+    if wphike['ManTxtDatum'] == '':
+        wptable += f"<td style=\"text-align:center;\"><b>{wphike['Datum'].strftime('%A')}<br>{wphike['Datum'].strftime('%d.%m.%Y')}</b></td>"
     else:
-        wptable += f"<td style=\"text-align:center;\"><b>{line['ManTxtDatum']}</b></td>"
+        wptable += f"<td style=\"text-align:center;\"><b>{wphike['ManTxtDatum']}</b></td>"
     # Veranstaltung - 1. Zeile, immer sichtbar, fett
-    if line['Absage'] != '':
-        erstezeile = "<del>" + line['Veranstaltung'] + "</del>"
+    if wphike['Absage'] != '':
+        erstezeile = "<del>" + wphike['Veranstaltung'] + "</del>"
         if wpzukunft is True:
-            erstezeile += f'<span style="color: red"> &gt;&gt;&gt;{line["Absage"]}&lt;&lt;&lt;</span>'
+            erstezeile += f'<span style="color: red"> &gt;&gt;&gt;{wphike["Absage"]}&lt;&lt;&lt;</span>'
         else:
-            erstezeile += f' &gt;&gt;&gt;{line["Absage"]}&lt;&lt;&lt;'
-    elif line['Ausgebucht'] != '':
-        erstezeile = f'{line["Veranstaltung"]} &gt;&gt;&gt;{line["Ausgebucht"]} &lt;&lt;&lt;'
+            erstezeile += f' &gt;&gt;&gt;{wphike["Absage"]}&lt;&lt;&lt;'
+    elif wphike['Ausgebucht'] != '':
+        erstezeile = f'{wphike["Veranstaltung"]} &gt;&gt;&gt;{wphike["Ausgebucht"]} &lt;&lt;&lt;'
     else:
-        erstezeile = line['Veranstaltung']
+        erstezeile = wphike['Veranstaltung']
 
     # Veranstaltung 2 - Beschreibung der Wanderung
     folgezeilen = ""
-    if line['Veranstaltung 2 '] != "":
-        folgezeilen += f'<br>{line["Veranstaltung 2 "]}'
+    if wphike['Veranstaltung 2 '] != "":
+        folgezeilen += f'<br>{wphike["Veranstaltung 2 "]}'
 
     # Veranstaltung 3 - Ergänzungen nur für zukünftige Termine,
     # wie Treffpunkt, Bus oder Kosten
     if wpzukunft:
-        if line['Veranstaltung 3'] != "":
-            folgezeilen += "<BR>" + line['Veranstaltung 3']
+        if wphike['Veranstaltung 3'] != "":
+            folgezeilen += "<BR>" + wphike['Veranstaltung 3']
     wptable += f"<td><b>{erstezeile}</b>{folgezeilen}</td>"
 
     # Art: Link auf Icon im Unterordner /icons
-    wptable += f"<td style=\"text-align:center;\"><img src=\"./icons/{line['Icon']}xs.png\"></td>"
+    wptable += f"<td style=\"text-align:center;\"><img src=\"./icons/{wphike['Icon']}xs.png\"></td>"
 
     # Wanderführer
-    if line['WFKW'] != '':
-        wptable += f"<td>LW: {line['WF']}<BR>KW: {line['WFKW']}</td>"
+    if wphike['WFKW'] != '':
+        wptable += f"<td>LW: {wphike['WF']}<BR>KW: {wphike['WFKW']}</td>"
     else:
-        wptable += f"<td>{line['WF']}</td>"
+        wptable += f"<td>{wphike['WF']}</td>"
 
     # Ausschreibung mit Link
     wpmailto = ''
     wptable += '<td>'
-    if line['Ausschreibung'] != "":
-        # Anmeldefrist, sofern nicht verstrichen
-        # if not pd.isnull(line['Anmeldefrist']):
-        if wpzukunft is True:
-            wpmailgen()  # Anmeldelink generieren
-        wptable += f"<b><a href=\"../download/{line['Ausschreibung']}\" target=\"_blank\">⇒Beschreibung</a></b>{wpmailto}"
-    if line['Wanderbericht'] != "":
-        wptable += f"<br><b><a href=\"{line['Wanderbericht']}\" target=\"_parent\">⇒Wanderbericht</a></b>"
+    if wphike['Ausschreibung'] != "":
+        wptable += f"<b><a href=\"../download/{wphike['Ausschreibung']}\" target=\"_blank\">⇒Beschreibung</a></b>"
+        if wphike['Datum'] > datetime.date.today():
+            wptable += f"{wpmailgen(wphike)}"  # Anmeldelink generieren
+    if wphike['Wanderbericht'] != "":
+        wptable += f"<br><b><a href=\"{wphike['Wanderbericht']}\" target=\"_parent\">⇒Wanderbericht</a></b>"
     wptable += "</td></tr>\n"
 
     # Teaser mit den nächsten n Wanderungen für die Startseite erstellen
-    if (wpzukunft is True) and (wpteaserzahl < 4) and \
-            (line['Absage'] == '') and (line['Ausgebucht'] == ''):
-        wpteaser += f"<li><h3>{line['Datum'].strftime('%d.%m.%Y')} - {line['Veranstaltung']} \
-            ({wtype[line['Icon']]})</h3></li>"
-        wpteaserzahl += 1
+    if (wpzukunft is True) and (wpteasercounter < 4) and \
+            (wphike['Absage'] == '') and (wphike['Ausgebucht'] == ''):
+        wpteaser += f"<li><h3>{wphike['Datum'].strftime('%d.%m.%Y')} - {wphike['Veranstaltung']} \
+            ({wtype[wphike['Icon']]})</h3></li>"
+        wpteasercounter += 1
 
     # Generiere Termin für iCal Kalender
     wpical += (
         f"BEGIN:VEVENT\r"
-        f"UID:pwvspeyer{line['Datum'].strftime('%y%m%d')}{line['Icon']}\r"
-        f"SUMMARY:{line['Veranstaltung']} ({wtype[line['Icon']]})\r"
+        f"UID:pwvspeyer{wphike['Datum'].strftime('%y%m%d')}{wphike['Icon']}\r"
+        f"SUMMARY:{wphike['Veranstaltung']} ({wtype[wphike['Icon']]})\r"
         # f"DESCRIPTION:Anmeldefrist:{line['Anmeldefrist']}\\nAusschreibung\r"
         f"URL:https://www.pwv-speyer.de/wanderplan\r"
-        f"DTSTART;VALUE=DATE:{line['Datum'].strftime('%Y%m%d')}\r"
-        f"DTEND;VALUE=DATE:{line['Datum'].strftime('%Y%m%d')}\r"
+        f"DTSTART;VALUE=DATE:{wphike['Datum'].strftime('%Y%m%d')}\r"
+        f"DTEND;VALUE=DATE:{wphike['Datum'].strftime('%Y%m%d')}\r"
         f"END:VEVENT\r"
     )
 
