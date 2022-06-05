@@ -57,7 +57,7 @@ wpscript = '<script type="text/javascript" src="wanderplan.js"></script>'
 # Generator für Anmeldungs-Mailto
 def wpmailgen(hike):
     # Nach Verstreichen der Anmeldefrist "Nachmeldung" anzeigen
-    if hike['Anmeldefrist'] > datetime.date.today():
+    if hike['Anmeldefrist'] >= datetime.date.today():
         wpmeldung = "Anmeldung"
     else:
         wpmeldung = "Nachmeldung"
@@ -195,12 +195,14 @@ for wphike in wpdata[0:]:
         f"BEGIN:VEVENT\r"
         f"UID:pwvspeyer{wphike['Datum'].strftime('%y%m%d')}{wphike['Icon']}\r"
         f"SUMMARY:{wphike['Veranstaltung']} ({wtype[wphike['Icon']]})\r"
-        # f"DESCRIPTION:Anmeldefrist:{line['Anmeldefrist']}\\nAusschreibung\r"
-        f"URL:https://www.pwv-speyer.de/wanderplan\r"
         f"DTSTART;VALUE=DATE:{wphike['Datum'].strftime('%Y%m%d')}\r"
         f"DTEND;VALUE=DATE:{wphike['Datum'].strftime('%Y%m%d')}\r"
-        f"END:VEVENT\r"
     )
+    if wphike['Ausschreibung'] != "":
+        wpical += f"URL:https://www.pwv-speyer.de/download/{wphike['Ausschreibung']}\r"
+    else:
+        wpical += "URL:https://www.pwv-speyer.de/wanderplan\r"
+    wpical += "END:VEVENT\r"
 
 # Dateiinhalte abschließen
 wptable += "</tbody > </table > </body> </html>"
