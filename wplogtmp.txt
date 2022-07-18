@@ -1,9 +1,9 @@
-2022/06/05 12:18:30 ===> Wanderplan-Generierung vom 2022-06-05 <===
-2022/06/05 12:18:30 Lese WEBINP_Wanderplan_PWV_Speyer_aktuell.xlsx.
-2022/06/05 12:18:30 Änderungsstand der Excel-Datei: 17.05.2022.
-2022/06/05 12:18:30 Generiere HTML-Tabelle, HTML-Teaser und iCal-Kalender.
-2022/06/05 12:18:30 HTML-Seite archiviert
-2022/06/05 12:18:30 Schreibe wptable.html mit 78 Veranstaltungen.
-2022/06/05 12:18:30 Schreibe wpteaser.html.
-2022/06/05 12:18:30 Schreibe wpical.ics.
-2022/06/05 12:18:30 Fertig!
+2022/06/15 08:47:12 ===> Wanderplan-Generierung vom 2022-06-15 <===
+2022/06/15 08:47:12 Lese WEBINP_Wanderplan_PWV_Speyer_aktuell.xlsx.
+2022/06/15 08:47:12 Änderungsstand der Excel-Datei: 14.06.2022.
+2022/06/15 08:47:12 Generiere HTML-Tabelle, HTML-Teaser und iCal-Kalender.
+2022/06/15 08:47:12 HTML-Seite archiviert
+2022/06/15 08:47:12 Schreibe wptable.html mit 78 Veranstaltungen.
+2022/06/15 08:47:12 Schreibe wpteaser.html.
+2022/06/15 08:47:12 Schreibe wpical.ics.
+2022/06/15 08:47:12 Fertig!

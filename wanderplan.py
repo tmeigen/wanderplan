@@ -151,16 +151,16 @@ for wphike in wpdata[0:]:
     else:
         erstezeile = wphike['Veranstaltung']
 
-    # Veranstaltung 2 - Beschreibung der Wanderung
+    # Veranstaltung2 - Beschreibung der Wanderung
     folgezeilen = ""
-    if wphike['Veranstaltung 2 '] != "":
-        folgezeilen += f'<br>{wphike["Veranstaltung 2 "]}'
+    if wphike['Veranstaltung2'] != "":
+        folgezeilen += f'<br>{wphike["Veranstaltung2"]}'
 
-    # Veranstaltung 3 - Ergänzungen nur für zukünftige Termine,
+    # Veranstaltung3 - Ergänzungen nur für zukünftige Termine,
     # wie Treffpunkt, Bus oder Kosten
     if wpzukunft:
-        if wphike['Veranstaltung 3'] != "":
-            folgezeilen += "<BR>" + wphike['Veranstaltung 3']
+        if wphike['Veranstaltung3'] != "":
+            folgezeilen += "<BR>" + wphike['Veranstaltung3']
     wptable += f"<td><b>{erstezeile}</b>{folgezeilen}</td>"
 
     # Art: Link auf Icon im Unterordner /icons
@@ -177,7 +177,9 @@ for wphike in wpdata[0:]:
     wptable += '<td>'
     if wphike['Ausschreibung'] != "":
         wptable += f"<b><a href=\"../download/{wphike['Ausschreibung']}\" target=\"_blank\">⇒Beschreibung</a></b>"
-        if wphike['Datum'] > datetime.date.today():
+        if wphike['Datum'] > datetime.date.today() and \
+           wphike['Absage'] != 'ABGESAGT' and \
+           wphike['Ausgebucht'] != 'AUSGEBUCHT':
             wptable += f"{wpmailgen(wphike)}"  # Anmeldelink generieren
     if wphike['Wanderbericht'] != "":
         wptable += f"<br><b><a href=\"{wphike['Wanderbericht']}\" target=\"_parent\">⇒Wanderbericht</a></b>"
@@ -186,8 +188,13 @@ for wphike in wpdata[0:]:
     # Teaser mit den nächsten n Wanderungen für die Startseite erstellen
     if (wpzukunft is True) and (wpteasercounter < 4) and \
             (wphike['Absage'] == '') and (wphike['Ausgebucht'] == ''):
-        wpteaser += f"<li><h3>{wphike['Datum'].strftime('%d.%m.%Y')} - {wphike['Veranstaltung']} \
+        if wphike['Ausschreibung'] == "":
+            wpteaser += f"<li><h3>{wphike['Datum'].strftime('%d.%m.%Y')} - {wphike['Veranstaltung']} \
             ({wtype[wphike['Icon']]})</h3></li>"
+        else:
+            wpteaser += f"<li><h3>{wphike['Datum'].strftime('%d.%m.%Y')} - \
+            <a href=\"../download/{wphike['Ausschreibung']}\" target=\"_blank\"> {wphike['Veranstaltung']} \
+            ({wtype[wphike['Icon']]})</a></h3></li>"
         wpteasercounter += 1
 
     # Generiere Termin für iCal Kalender
